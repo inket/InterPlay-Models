@@ -5,7 +5,7 @@ public struct Video: Codable, Hashable, Sendable {
         enum CodingKeys: String, CodingKey, Codable, Sendable {
             case status
             case unavailable
-            case downloading
+            case preparing
             case available
         }
 
@@ -15,7 +15,7 @@ public struct Video: Codable, Hashable, Sendable {
         }
 
         case unavailable
-        case downloading(_ progress: Double)
+        case preparing(_ progress: Double)
         case available(_ playbackURL: URL)
 
         public init(from decoder: any Decoder) throws {
@@ -34,11 +34,11 @@ public struct Video: Codable, Hashable, Sendable {
                 )
             case .unavailable:
                 self = .unavailable
-            case .downloading:
+            case .preparing:
                 let progress = try decoder
                     .container(keyedBy: Video.Availability.Properties.self)
                     .decode(Double.self, forKey: .progress)
-                self = .downloading(progress)
+                self = .preparing(progress)
             case .available:
                 let playbackURL = try decoder
                     .container(keyedBy: Video.Availability.Properties.self)
@@ -53,8 +53,8 @@ public struct Video: Codable, Hashable, Sendable {
             switch self {
             case .unavailable:
                 try container.encode(CodingKeys.unavailable, forKey: .status)
-            case .downloading(let progress):
-                try container.encode(CodingKeys.downloading, forKey: .status)
+            case .preparing(let progress):
+                try container.encode(CodingKeys.preparing, forKey: .status)
                 var propertiesContainer = encoder.container(keyedBy: Video.Availability.Properties.self)
                 try propertiesContainer.encode(progress, forKey: .progress)
             case .available(let playbackURL):

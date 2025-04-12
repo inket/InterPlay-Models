@@ -1,11 +1,22 @@
 import Foundation
 
 public struct Source: Codable, Hashable, Sendable {
-    public let name: String
-    public let url: URL
+    enum CodingKeys: String, CodingKey {
+        case name
+        case baseURL = "base_url"
+        case users
+        case feeds
+    }
 
-    public init(name: String, url: URL) {
+    public let name: String
+    public let baseURL: URL
+    public let users: [User]
+    public let feeds: [FeedDefinition]
+
+    public init(name: String, baseURL: URL, users: [User], feeds: [FeedDefinition]) {
         self.name = name
-        self.url = url
+        self.baseURL = baseURL
+        self.users = users
+        self.feeds = feeds
     }
 }
